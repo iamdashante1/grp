@@ -1,0 +1,158 @@
+'use client';
+
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import toast from 'react-hot-toast';
+
+interface User {
+  _id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  role: {
+    _id: string;
+    name: string;
+    description: string;
+  };
+  bloodType?: string;
+  profileImage?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+    country?: string;
+  };
+  isActive: boolean;
+  lastLogin?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  register: (userData: any) => Promise<void>;
+  updateUser: (userData: Partial<User>) => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check for stored user session
+    const storedUser = sessionStorage.getItem('user');
+    const storedToken = sessionStorage.getItem('authToken');
+    if (storedUser && storedToken) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('authToken');
+      }
+    }
+    setIsLoading(false);
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      const { user: userData, token } = data.data;
+      
+      setUser(userData);
+      setIsAuthenticated(true);
+      sessionStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('authToken', token);
+      sessionStorage.setItem('userId', userData._id);
+      
+      toast.success('Login successful!');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      toast.error(errorMessage);
+      throw error;
+    }
+  };
+
+  const register = async (userData: any) => {
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      const { user: newUser, token } = data.data;
+      
+      setUser(newUser);
+      setIsAuthenticated(true);
+      sessionStorage.setItem('user', JSON.stringify(newUser));
+      sessionStorage.setItem('authToken', token);
+      sessionStorage.setItem('userId', newUser._id);
+      
+      toast.success('Registration successful!');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      toast.error(errorMessage);
+      throw error;
+    }
+  };
+
+  const updateUser = (userData: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...userData };
+      setUser(updatedUser);
+      sessionStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('userId');
+    toast.success('Logged out successfully');
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, updateUser }}>
+      {!isLoading && children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
