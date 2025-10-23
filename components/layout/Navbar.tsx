@@ -152,13 +152,13 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center space-x-2">
                 <Link
-                  href="/login"
+                  href="/auth/login"
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 cursor-pointer"
                 >
                   Login
                 </Link>
                 <Link
-                  href="/register"
+                  href="/auth/register"
                   className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 cursor-pointer"
                 >
                   Sign Up
@@ -278,13 +278,13 @@ export default function Navbar() {
                   Contact
                 </Link>
                 <Link
-                  href="/login"
+                  href="/auth/login"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Login
                 </Link>
                 <Link
-                  href="/register"
+                  href="/auth/register"
                   className="block px-3 py-2 rounded-md text-base font-medium bg-primary-600 text-white hover:bg-primary-700"
                 >
                   Sign Up
