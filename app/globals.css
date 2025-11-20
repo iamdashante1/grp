@@ -47,8 +47,33 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
 }
+
+/* Design tokens & primitives */
+.container-app { max-width: 80rem; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+@media (min-width: 640px){ .container-app { padding-left: 1.5rem; padding-right: 1.5rem; } }
+@media (min-width: 1024px){ .container-app { padding-left: 2rem; padding-right: 2rem; } }
+
+.section-y { padding-top: 4rem; padding-bottom: 4rem; }
+@media (min-width: 768px){ .section-y { padding-top: 5rem; padding-bottom: 5rem; } }
+
+.card { background-color: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08); }
+.dark .card { background-color: #111827; border-color: #374151; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.35), 0 4px 6px -4px rgb(0 0 0 / 0.35); }
+
+.heading { font-size: 2.25rem; line-height: 2.5rem; font-weight: 800; }
+@media (min-width: 768px){ .heading { font-size: 3rem; line-height: 1; } }
+
+.subheading { color: #4b5563; }
+.dark .subheading { color: #9ca3af; }
+
+.muted { color: #6b7280; }
+.dark .muted { color: #9ca3af; }
+
+.glass { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(8px); }
+
+.footer-gradient-top { position: relative; }
+.footer-gradient-top::before { content: ""; position: absolute; inset: 0 auto auto 0; height: 3px; width: 100%; background: linear-gradient(90deg, #ef4444, #b91c1c 60%, #dc2626); opacity: 0.7; }
 
 /* Remove outline from inputs and prevent autocomplete color change */
 input:focus,
@@ -194,4 +219,103 @@ html {
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   border-color: #1e293b;
+}
+
+/* Animations */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-in-up {
+    animation: fade-in-up 500ms ease-out both;
+    will-change: transform, opacity;
+  }
+  .animate-fade-in {
+    animation: fade-in 400ms ease-out both;
+    will-change: opacity;
+  }
+  .animate-fade-in-right {
+    animation: fade-in-right 420ms ease-out both;
+    will-change: transform, opacity;
+  }
+  .animate-scale-in {
+    animation: scale-in 180ms ease-out both;
+    will-change: transform, opacity;
+  }
+  .animate-slide-down {
+    animation: slide-down 220ms ease-out both;
+    will-change: transform, opacity;
+  }
+
+  /* Simple interactive hover effects */
+  .hover-lift {
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 10px 20px -10px rgb(0 0 0 / 0.35);
+  }
+  .hover-glow {
+    transition: box-shadow 200ms ease;
+  }
+  .hover-glow:hover {
+    box-shadow: 0 0 0 2px rgba(239,68,68,0.25), 0 8px 16px -8px rgba(239,68,68,0.35);
+  }
+
+  /* Stagger helper for first 8 children */
+  .stagger-children > * { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 360ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

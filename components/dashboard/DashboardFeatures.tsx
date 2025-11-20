@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { 
   Heart, 
   Droplet,
@@ -14,6 +16,8 @@ import {
   Clock,
   X
 } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 interface Achievement {
   id: string;
@@ -28,37 +32,71 @@ interface Achievement {
 
 interface DashboardFeaturesProps {
   userName?: string;
+  hideWelcome?: boolean;
 }
 
-export default function DashboardFeatures({ userName = 'User' }: DashboardFeaturesProps) {
+export default function DashboardFeatures({ userName = '', hideWelcome = false }: DashboardFeaturesProps) {
+  const { t } = useI18n();
+  const router = useRouter();
   const [showAchievements, setShowAchievements] = useState(false);
   const [showGoals, setShowGoals] = useState(false);
+
+  const colorMap = {
+    blue: {
+      text500: 'text-blue-500',
+      text600: 'text-blue-600',
+      bg500: 'bg-blue-500',
+      bg100: 'bg-blue-100',
+      darkBg900_30: 'dark:bg-blue-900/30',
+    },
+    green: {
+      text500: 'text-green-500',
+      text600: 'text-green-600',
+      bg500: 'bg-green-500',
+      bg100: 'bg-green-100',
+      darkBg900_30: 'dark:bg-green-900/30',
+    },
+    purple: {
+      text500: 'text-purple-500',
+      text600: 'text-purple-600',
+      bg500: 'bg-purple-500',
+      bg100: 'bg-purple-100',
+      darkBg900_30: 'dark:bg-purple-900/30',
+    },
+    orange: {
+      text500: 'text-orange-500',
+      text600: 'text-orange-600',
+      bg500: 'bg-orange-500',
+      bg100: 'bg-orange-100',
+      darkBg900_30: 'dark:bg-orange-900/30',
+    },
+  } as const;
 
   const achievements: Achievement[] = [
     {
       id: 'first-donation',
-      title: 'First Step',
-      description: 'Complete your first blood donation',
+      title: t('dash.ach.first.title'),
+      description: t('dash.ach.first.desc'),
       icon: Droplet,
       progress: 1,
       total: 1,
       unlocked: true,
-      reward: '100 points'
+      reward: t('dash.ach.reward', { points: 100 })
     },
     {
       id: 'five-donations',
-      title: 'Regular Hero',
-      description: 'Complete 5 blood donations',
+      title: t('dash.ach.five.title'),
+      description: t('dash.ach.five.desc'),
       icon: Heart,
       progress: 5,
       total: 5,
       unlocked: true,
-      reward: '500 points'
+      reward: t('dash.ach.reward', { points: 500 })
     },
     {
       id: 'ten-donations',
-      title: 'Lifesaver',
-      description: 'Complete 10 blood donations',
+      title: t('dash.ach.ten.title'),
+      description: t('dash.ach.ten.desc'),
       icon: Award,
       progress: 5,
       total: 10,
@@ -66,8 +104,8 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
     },
     {
       id: 'streak-week',
-      title: 'Dedicated',
-      description: 'Donate every eligible period for 3 months',
+      title: t('dash.ach.streak.title'),
+      description: t('dash.ach.streak.desc'),
       icon: Zap,
       progress: 1,
       total: 3,
@@ -78,8 +116,8 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
   const goals = [
     {
       id: 'monthly-goal',
-      title: 'Monthly Impact',
-      description: 'Help save 3 lives this month',
+      title: t('dash.goals.monthly.title'),
+      description: t('dash.goals.monthly.desc'),
       current: 1,
       target: 3,
       icon: Target,
@@ -87,8 +125,8 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
     },
     {
       id: 'yearly-goal',
-      title: 'Yearly Mission',
-      description: 'Complete 12 donations this year',
+      title: t('dash.goals.yearly.title'),
+      description: t('dash.goals.yearly.desc'),
       current: 5,
       target: 12,
       icon: TrendingUp,
@@ -98,15 +136,15 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
 
   const upcomingMilestones = [
     {
-      title: '10th Donation',
-      description: 'Just 5 more donations to unlock "Lifesaver" badge',
+      title: t('dash.milestones.tenth.title'),
+      description: t('dash.milestones.tenth.desc'),
       progress: 50,
       icon: Award,
       color: 'purple'
     },
     {
-      title: 'Next Eligible',
-      description: 'You can donate again in 32 days',
+      title: t('home.auth.nextEligible'),
+      description: t('home.auth.nextEligibleDesc', { days: 32 }),
       icon: Calendar,
       color: 'orange'
     }
@@ -114,55 +152,71 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
 
   const quickActions = [
     {
-      title: 'Schedule Donation',
-      description: 'Book your next appointment',
+      title: t('donate.schedule'),
+      description: t('home.auth.bookAppointment'),
       icon: Calendar,
       color: 'bg-blue-500',
-      action: () => console.log('Schedule')
+      action: () => router.push('/donate')
     },
     {
-      title: 'Request Blood',
-      description: 'Emergency blood request',
+      title: t('nav.request'),
+      description: t('dash.quick.emergency'),
       icon: Heart,
       color: 'bg-red-500',
-      action: () => console.log('Request')
+      action: () => router.push('/request')
     },
     {
-      title: 'View Impact',
-      description: 'See lives you\'ve saved',
+      title: t('dash.quick.viewImpact'),
+      description: t('dash.quick.viewImpactDesc'),
       icon: TrendingUp,
       color: 'bg-green-500',
-      action: () => console.log('Impact')
+      action: () => router.push('/dashboard')
     },
     {
-      title: 'Share Story',
-      description: 'Inspire others to donate',
+      title: t('dash.quick.share'),
+      description: t('dash.quick.shareDesc'),
       icon: Zap,
       color: 'bg-purple-500',
-      action: () => console.log('Share')
+      action: async () => {
+        try {
+          const shareData = {
+            title: 'BloodBridge',
+            text: t('home.cta.blurb'),
+            url: typeof window !== 'undefined' ? window.location.origin : 'https://bloodbridge.local',
+          };
+          if (typeof navigator !== 'undefined' && (navigator as any).share) {
+            await (navigator as any).share(shareData);
+          } else if (typeof window !== 'undefined' && navigator.clipboard) {
+            await navigator.clipboard.writeText(shareData.url);
+            toast.success('Link copied to clipboard');
+          }
+        } catch (err) {
+          toast.error('Unable to share right now');
+        }
+      }
     }
   ];
 
   const recentAlerts = [
     {
       type: 'urgent',
-      title: 'O- Blood Critically Low',
-      description: 'Local hospitals need O- blood urgently',
-      time: '2 hours ago',
+      title: t('dash.alerts.lowOBlood'),
+      description: t('dash.alerts.lowOBloodDesc'),
+      time: t('dash.alerts.time.hours', { count: 2 }),
       icon: AlertCircle
     },
     {
       type: 'success',
-      title: 'Donation Confirmed',
-      description: 'Your appointment for Oct 25 is confirmed',
-      time: '1 day ago',
+      title: t('dash.alerts.donationConfirmed'),
+      description: t('dash.alerts.donationConfirmedDesc', { date: 'Oct 25' }),
+      time: t('dash.alerts.time.days', { count: 1 }),
       icon: CheckCircle
     },
     {
       type: 'info',
-      title: 'Eligibility Update',
-      description: 'You\'re eligible to donate in 32 days',
-      time: '3 days ago',
+      title: t('dash.alerts.eligibilityUpdate'),
+      description: t('home.auth.nextEligibleDesc', { days: 32 }),
+      time: t('dash.alerts.time.days', { count: 3 }),
       icon: Clock
     }
   ];
@@ -170,26 +224,29 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-6 text-white">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">Welcome back, {userName}! 👋</h2>
-            <p className="text-red-100">You have saved 15 lives through your donations. Keep up the amazing work!</p>
-          </div>
-          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-            <div className="text-3xl font-bold">5</div>
-            <div className="text-sm text-red-100">Total Donations</div>
+      {!hideWelcome && (
+        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">{t('home.auth.welcome', { name: userName })}</h2>
+              <p className="text-red-100">{t('dash.banner.savings', { count: 15 })}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold">5</div>
+              <div className="text-sm text-red-100">{t('dash.totalDonations')}</div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Quick Actions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
         {quickActions.map((action, index) => (
           <button
             key={index}
             onClick={action.action}
-            className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200 hover:-translate-y-1 text-left"
+            className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200 hover:-translate-y-1 text-left animate-fade-in-up hover-lift"
+            style={{ animationDelay: `${index * 80}ms` }}
           >
             <div className={`${action.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
               <action.icon className="h-6 w-6 text-white" />
@@ -206,29 +263,31 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Achievements Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 animate-fade-in-up">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
               <Award className="h-6 w-6 mr-2 text-yellow-500" />
-              Achievements
+              {t('dash.ach.title')}
             </h3>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowAchievements(!showAchievements)}
-              className="text-red-600 hover:text-red-700 text-sm font-medium"
             >
-              {showAchievements ? 'Show Less' : 'View All'}
-            </button>
+              {showAchievements ? t('dash.showLess') : t('dash.viewAll')}
+            </Button>
           </div>
           
           <div className="space-y-4">
-            {achievements.slice(0, showAchievements ? undefined : 2).map((achievement) => (
+            {achievements.slice(0, showAchievements ? undefined : 2).map((achievement, idx) => (
               <div
                 key={achievement.id}
-                className={`p-4 rounded-lg border-2 ${
+                className={`p-4 rounded-lg border-2 animate-fade-in-up ${
                   achievement.unlocked
                     ? 'bg-green-50 dark:bg-green-900/20 border-green-500'
                     : 'bg-gray-50 dark:bg-gray-700/50 border-gray-300 dark:border-gray-600'
                 }`}
+                style={{ animationDelay: `${idx * 70}ms` }}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center space-x-3">
@@ -274,18 +333,18 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
         </div>
 
         {/* Goals & Milestones */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 animate-fade-in-up">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
             <Target className="h-6 w-6 mr-2 text-blue-500" />
-            Goals & Milestones
+            {t('dash.goals.title')}
           </h3>
           
           <div className="space-y-4">
-            {goals.map((goal) => (
-              <div key={goal.id} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            {goals.map((goal, idx) => (
+              <div key={goal.id} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg animate-fade-in-up" style={{ animationDelay: `${idx * 70}ms` }}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
-                    <goal.icon className={`h-5 w-5 text-${goal.color}-500`} />
+                    <goal.icon className={`h-5 w-5 ${colorMap[goal.color as keyof typeof colorMap].text500}`} />
                     <h4 className="font-semibold text-gray-900 dark:text-white">
                       {goal.title}
                     </h4>
@@ -299,7 +358,7 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
                 </p>
                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                   <div
-                    className={`bg-${goal.color}-500 h-2 rounded-full transition-all duration-500`}
+                    className={`${colorMap[goal.color as keyof typeof colorMap].bg500} h-2 rounded-full transition-all duration-500`}
                     style={{ width: `${(goal.current / goal.target) * 100}%` }}
                   />
                 </div>
@@ -308,12 +367,12 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
 
             <div className="mt-6 space-y-3">
               <h4 className="font-medium text-gray-900 dark:text-white text-sm">
-                Upcoming Milestones
+                {t('dash.milestones.upcoming')}
               </h4>
               {upcomingMilestones.map((milestone, index) => (
-                <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                  <div className={`p-2 rounded-lg bg-${milestone.color}-100 dark:bg-${milestone.color}-900/30`}>
-                    <milestone.icon className={`h-4 w-4 text-${milestone.color}-600`} />
+                <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg animate-fade-in-up">
+                  <div className={`p-2 rounded-lg ${colorMap[milestone.color as keyof typeof colorMap].bg100} ${colorMap[milestone.color as keyof typeof colorMap].darkBg900_30}`}>
+                    <milestone.icon className={`h-4 w-4 ${colorMap[milestone.color as keyof typeof colorMap].text600}`} />
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900 dark:text-white text-sm">
@@ -331,23 +390,24 @@ export default function DashboardFeatures({ userName = 'User' }: DashboardFeatur
       </div>
 
       {/* Recent Alerts */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 animate-fade-in-up">
         <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
           <AlertCircle className="h-6 w-6 mr-2 text-orange-500" />
-          Recent Alerts & Updates
+          {t('dash.alerts.title')}
         </h3>
         
         <div className="space-y-3">
           {recentAlerts.map((alert, index) => (
             <div
               key={index}
-              className={`p-4 rounded-lg border-l-4 ${
+              className={`p-4 rounded-lg border-l-4 animate-fade-in-up ${
                 alert.type === 'urgent'
                   ? 'bg-red-50 dark:bg-red-900/20 border-red-500'
                   : alert.type === 'success'
                   ? 'bg-green-50 dark:bg-green-900/20 border-green-500'
                   : 'bg-blue-50 dark:bg-blue-900/20 border-blue-500'
               }`}
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">

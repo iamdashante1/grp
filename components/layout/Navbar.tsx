@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Heart, Bell, Menu, X, User, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import Button from '@/components/ui/Button';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -14,6 +16,9 @@ export default function Navbar() {
   
   const { user, isAuthenticated, logout } = useAuth();
   const isAdmin = user?.role?.name === 'admin';
+  const { t } = useI18n();
+  const displayName = (user?.fullName || user?.name || 'User');
+  const firstName = displayName.split(' ')[0];
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -58,34 +63,34 @@ export default function Navbar() {
                 BloodBridge
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
-                Save Lives Together
+                {t('nav.tagline')}
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            <NavLink href="/">Home</NavLink>
+            <NavLink href="/">{t('nav.home')}</NavLink>
             {isAuthenticated && (
-              <NavLink href="/blood-availability">Blood Bank</NavLink>
+              <NavLink href="/blood-availability">{t('nav.bloodBank')}</NavLink>
             )}
             {isAuthenticated ? (
               <>
-                <NavLink href="/dashboard">Dashboard</NavLink>
+                <NavLink href="/dashboard">{t('nav.dashboard')}</NavLink>
                 {(user?.role?.name === 'donor' || isAdmin) && (
-                  <NavLink href="/donate">Donate</NavLink>
+                  <NavLink href="/donate">{t('nav.donate')}</NavLink>
                 )}
                 {(user?.role?.name === 'hospital' || user?.role?.name === 'recipient' || isAdmin) && (
-                  <NavLink href="/request">Request</NavLink>
+                  <NavLink href="/request">{t('nav.request')}</NavLink>
                 )}
                 {isAdmin && (
-                  <NavLink href="/admin">Admin</NavLink>
+                  <NavLink href="/admin">{t('nav.admin')}</NavLink>
                 )}
               </>
             ) : (
               <>
-                <NavLink href="/about">About</NavLink>
-                <NavLink href="/contact">Contact</NavLink>
+                <NavLink href="/about">{t('nav.about')}</NavLink>
+                <NavLink href="/contact">{t('nav.contact')}</NavLink>
               </>
             )}
           </div>
@@ -112,27 +117,27 @@ export default function Navbar() {
                       {user?.profileImage ? (
                         <img 
                           src={user.profileImage} 
-                          alt={user.fullName}
+                          alt={user.fullName || user?.name || 'User'}
                           className="w-full h-full object-cover"
                         />
                       ) : (
                         <span className="text-white text-sm font-medium">
-                          {user?.fullName?.charAt(0) || 'U'}
+                          {(user?.fullName || user?.name || 'U').charAt(0)}
                         </span>
                       )}
                     </div>
-                    <span className="text-sm font-medium">{user?.fullName || 'User'}</span>
+                    <span className="text-sm font-medium">{user?.fullName || user?.name || 'User'}</span>
                   </button>
 
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50 animate-scale-in">
                       <Link
                         href="/profile"
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                       >
                         <User className="h-4 w-4 mr-2" />
-                        Profile
+                        {t('nav.profile')}
                       </Link>
                       <button
                         onClick={() => {
@@ -143,7 +148,7 @@ export default function Navbar() {
                         className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                       >
                         <LogOut className="h-4 w-4 mr-2" />
-                        Logout
+                        {t('nav.logout')}
                       </button>
                     </div>
                   )}
@@ -151,21 +156,25 @@ export default function Navbar() {
               </>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link
-                  href="/auth/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 cursor-pointer"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 cursor-pointer"
-                >
-                  Sign Up
-                </Link>
+                <Button href="/auth/login" variant="ghost" size="sm">{t('nav.login')}</Button>
+                <Button href="/auth/register" variant="primary" size="sm">{t('nav.signup')}</Button>
               </div>
             )}
           </div>
+
+          {/* Mobile: show user name/avatar when authenticated */}
+          {isAuthenticated && (
+            <Link href="/profile" className="md:hidden mr-2 flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
+                {user?.profileImage ? (
+                  <img src={user.profileImage} alt={displayName} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-white text-sm font-medium">{firstName.charAt(0)}</span>
+                )}
+              </div>
+              <span className="text-sm font-medium text-gray-900 dark:text-white">{firstName}</span>
+            </Link>
+          )}
 
           {/* Mobile menu button */}
           <button
@@ -179,8 +188,23 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-700 animate-slide-down">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-800">
+            {isAuthenticated && (
+              <div className="flex items-center space-x-3 px-3 py-3 border-b border-gray-200 dark:border-gray-700">
+                <div className="w-9 h-9 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
+                  {user?.profileImage ? (
+                    <img src={user.profileImage} alt={user.fullName || user?.name || 'User'} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-white text-sm font-medium">{(user?.fullName || user?.name || 'U').charAt(0)}</span>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.fullName || user?.name || 'User'}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</div>
+                </div>
+              </div>
+            )}
             <Link
               href="/"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
@@ -189,7 +213,7 @@ export default function Navbar() {
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
-              Home
+              {t('nav.home')}
             </Link>
             
             {isAuthenticated ? (
@@ -202,7 +226,7 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 <Link
                   href="/blood-availability"
@@ -212,7 +236,7 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  Blood Bank
+                  {t('nav.bloodBank')}
                 </Link>
                 <Link
                   href="/donate"
@@ -222,7 +246,7 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  Donate
+                  {t('nav.donate')}
                 </Link>
                 <Link
                   href="/request"
@@ -232,7 +256,7 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  Request
+                  {t('nav.request')}
                 </Link>
                 <Link
                   href="/profile"
@@ -242,7 +266,7 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  Profile
+                  {t('nav.profile')}
                 </Link>
                 <button
                   onClick={() => {
@@ -252,7 +276,7 @@ export default function Navbar() {
                   }}
                   className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
@@ -265,7 +289,7 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  About
+                  {t('nav.about')}
                 </Link>
                 <Link
                   href="/contact"
@@ -275,22 +299,13 @@ export default function Navbar() {
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  Contact
+                  {t('nav.contact')}
                 </Link>
-                <Link
-                  href="/auth/login"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="block px-3 py-2 rounded-md text-base font-medium bg-primary-600 text-white hover:bg-primary-700"
-                >
-                  Sign Up
-                </Link>
+                <Button href="/auth/login" variant="ghost" size="md" className="w-full justify-start">{t('nav.login')}</Button>
+                <Button href="/auth/register" variant="primary" size="md" className="w-full justify-start">{t('nav.signup')}</Button>
               </>
             )}
+            
           </div>
         </div>
       )}

@@ -1,11 +1,14 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { AlertCircle, Droplet, User, Phone, MapPin, Clock, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Dropdown from '@/components/ui/Dropdown';
+import { useI18n } from '@/components/providers/I18nProvider';
+import Button from '@/components/ui/Button';
 
 export default function RequestPage() {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     patientName: '',
     bloodType: '',
@@ -49,19 +52,19 @@ export default function RequestPage() {
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.patientName.trim()) newErrors.patientName = 'Patient name is required';
-    if (!formData.bloodType) newErrors.bloodType = 'Blood type is required';
+    if (!formData.patientName.trim()) newErrors.patientName = t('request.errors.patientNameRequired');
+    if (!formData.bloodType) newErrors.bloodType = t('request.errors.bloodTypeRequired');
     if (!formData.unitsNeeded || parseInt(formData.unitsNeeded) < 1) {
-      newErrors.unitsNeeded = 'Please specify number of units needed';
+      newErrors.unitsNeeded = t('request.errors.unitsNeeded');
     }
-    if (!formData.hospital) newErrors.hospital = 'Hospital is required';
-    if (!formData.contactName.trim()) newErrors.contactName = 'Contact name is required';
+    if (!formData.hospital) newErrors.hospital = t('request.errors.hospitalRequired');
+    if (!formData.contactName.trim()) newErrors.contactName = t('request.errors.contactNameRequired');
     if (!formData.contactPhone.trim()) {
-      newErrors.contactPhone = 'Contact phone is required';
+      newErrors.contactPhone = t('request.errors.contactPhoneRequired');
     } else if (!/^\d{10,}$/.test(formData.contactPhone.replace(/[-\s]/g, ''))) {
-      newErrors.contactPhone = 'Please enter a valid phone number';
+      newErrors.contactPhone = t('request.errors.contactPhoneInvalid');
     }
-    if (!formData.reason.trim()) newErrors.reason = 'Reason for request is required';
+    if (!formData.reason.trim()) newErrors.reason = t('request.errors.reasonRequired');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -70,14 +73,14 @@ export default function RequestPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      toast.success('Blood request submitted successfully! We will contact you shortly.');
+      toast.success(t('request.toast.success'));
       console.log('Request submitted:', formData);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto container-app">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -86,10 +89,10 @@ export default function RequestPage() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Request Blood
+            {t('request.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Submit a blood request for your patient or loved one. We'll match you with available donors.
+            {t('request.subtitle')}
           </p>
         </div>
 
@@ -99,10 +102,10 @@ export default function RequestPage() {
             <AlertCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-1">
-                Emergency Blood Needs?
+                {t('request.emergency.title')}
               </h3>
               <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-                For immediate emergency blood requirements, please call our 24/7 hotline:
+                {t('request.emergency.subtitle')}
               </p>
               <p className="text-lg font-bold text-red-600">
                 +1 (876) BLOOD-911 (256-6391)
@@ -315,13 +318,10 @@ export default function RequestPage() {
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 * Required fields
               </p>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center space-x-2"
-              >
-                <Droplet className="h-5 w-5" />
-                <span>Submit Request</span>
-              </button>
+              <Button type="submit">
+                <Droplet className="h-5 w-5 mr-2" />
+                <span>{t('request.submit')}</span>
+              </Button>
             </div>
           </form>
         </div>
@@ -335,10 +335,10 @@ export default function RequestPage() {
                 What Happens Next?
               </h3>
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                <li>• We'll review your request immediately</li>
-                <li>• Our team will match available donors with your requirements</li>
-                <li>• You'll receive a confirmation call within 2 hours</li>
-                <li>• For emergencies, blood can be arranged within 24 hours</li>
+                <li>â€¢ We'll review your request immediately</li>
+                <li>â€¢ Our team will match available donors with your requirements</li>
+                <li>â€¢ You'll receive a confirmation call within 2 hours</li>
+                <li>â€¢ For emergencies, blood can be arranged within 24 hours</li>
               </ul>
             </div>
           </div>
@@ -347,3 +347,5 @@ export default function RequestPage() {
     </div>
   );
 }
+
+

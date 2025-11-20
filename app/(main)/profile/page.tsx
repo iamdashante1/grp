@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
@@ -28,6 +28,7 @@ export default function Profile() {
   const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPersonalHidden, setIsPersonalHidden] = useState(false);
   const [profileImage, setProfileImage] = useState<string>(user?.profileImage || '/default-avatar.jpg');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -178,7 +179,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto container-app">
         {/* Header with Profile Picture */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -247,25 +248,37 @@ export default function Profile() {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Profile Information
                 </h2>
-                {!isEditing ? (
+                <div className="flex items-center gap-4">
+                  {!isEditing ? (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                    >
+                      <Edit3 className="h-4 w-4" />
+                      <span className="text-sm font-medium">Edit</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCancel}
+                      className="flex items-center space-x-1 text-gray-600 hover:text-gray-700 transition-colors cursor-pointer"
+                    >
+                      <X className="h-4 w-4" />
+                      <span className="text-sm">Cancel</span>
+                    </button>
+                  )}
                   <button
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors cursor-pointer"
-                  >
-                    <Edit3 className="h-4 w-4" />
-                    <span className="text-sm font-medium">Edit</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleCancel}
-                    className="flex items-center space-x-1 text-gray-600 hover:text-gray-700 transition-colors cursor-pointer"
+                    aria-label="Close personal info"
+                    onClick={() => { setIsPersonalHidden(!isPersonalHidden); if (isEditing) setIsEditing(false); }}
+                    className="p-1 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    title={isPersonalHidden ? 'Show' : 'Hide'}
+                    type="button"
                   >
                     <X className="h-4 w-4" />
-                    <span className="text-sm">Cancel</span>
                   </button>
-                )}
+                </div>
               </div>
 
+              {!isPersonalHidden && (
               <form onSubmit={onSubmit} className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Full Name */}
@@ -488,6 +501,7 @@ export default function Profile() {
                   </div>
                 )}
               </form>
+              )}
             </div>
           </div>
 
@@ -638,3 +652,5 @@ export default function Profile() {
     </div>
   );
 }
+
+

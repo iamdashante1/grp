@@ -1,11 +1,11 @@
-'use client';
+﻿'use client';
 
 import { Shield, Users, Activity, Settings, AlertCircle } from 'lucide-react';
 
 export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-app">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
@@ -158,3 +158,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+

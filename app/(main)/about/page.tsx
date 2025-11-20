@@ -1,5 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 import { 
   Heart, 
   Users, 
@@ -128,7 +129,7 @@ export default function About() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-app">
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className="bg-white/20 p-4 rounded-full">
@@ -146,7 +147,7 @@ export default function About() {
 
       {/* Mission Section */}
       <div className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-app">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
@@ -207,7 +208,7 @@ export default function About() {
 
       {/* Features Section */}
       <div className="bg-white dark:bg-gray-800 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-app">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Why Choose BloodBridge?
@@ -237,7 +238,7 @@ export default function About() {
 
       {/* Values Section */}
       <div className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-app">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Our Core Values
@@ -289,7 +290,7 @@ export default function About() {
 
       {/* CTA Section */}
       <div className="bg-red-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="container-app text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Make a Difference?
           </h2>
@@ -298,21 +299,13 @@ export default function About() {
             Every donation counts, every donor matters.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/register" 
-              className="bg-white text-red-600 px-8 py-3 rounded-lg hover:bg-red-50 transition-colors font-medium text-center"
-            >
-              Become a Donor
-            </Link>
-            <Link 
-              href="/blood-availability" 
-              className="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-red-600 transition-colors font-medium text-center"
-            >
-              Request Blood
-            </Link>
+            <Button href="/auth/register" variant="secondary">Become a Donor</Button>
+            <Button href="/blood-availability" variant="outline">Request Blood</Button>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+

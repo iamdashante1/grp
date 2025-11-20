@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -6,8 +6,11 @@ import { Heart, Calendar as CalendarIcon, MapPin, Clock, CheckCircle, ArrowRight
 import toast from 'react-hot-toast';
 import Calendar from '@/components/ui/Calendar';
 import Dropdown from '@/components/ui/Dropdown';
+import { useI18n } from '@/components/providers/I18nProvider';
+import Button from '@/components/ui/Button';
 
 export default function DonatePage() {
+  const { t } = useI18n();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -43,7 +46,7 @@ export default function DonatePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Donation appointment request submitted! We will contact you shortly.');
+    toast.success(t('donate.toast.success'));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -57,7 +60,7 @@ export default function DonatePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-app">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
@@ -66,10 +69,10 @@ export default function DonatePage() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Donate Blood, Save Lives
+            {t('donate.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Schedule your blood donation appointment and join thousands of heroes making a difference.
+            {t('donate.subtitle')}
           </p>
         </div>
 
@@ -78,14 +81,14 @@ export default function DonatePage() {
           <div className="lg:col-span-2">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Schedule Appointment
+                {t('donate.scheduleTitle')}
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Custom Calendar */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Select Appointment Date & Time
+                    {t('donate.selectDateTime')}
                   </label>
                   <Calendar
                     selectedDate={selectedDate}
@@ -104,8 +107,8 @@ export default function DonatePage() {
 
                 {/* Custom Dropdown for Location */}
                 <Dropdown
-                  label="Donation Location"
-                  placeholder="Select a donation center"
+                  label={t('donate.location.label')}
+                  placeholder={t('donate.location.placeholder')}
                   required
                   searchable
                   value={selectedLocation}
@@ -162,14 +165,11 @@ export default function DonatePage() {
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                >
-                  <CalendarIcon className="h-5 w-5" />
-                  <span>Schedule Donation</span>
-                  <ArrowRight className="h-5 w-5" />
-                </button>
+                <Button type="submit" fullWidth>
+                  <CalendarIcon className="h-5 w-5 mr-2" />
+                  <span>{t('donate.schedule')}</span>
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
               </form>
             </div>
           </div>
@@ -179,24 +179,24 @@ export default function DonatePage() {
             {/* Eligibility Requirements */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                Eligibility Requirements
+                {t('donate.eligibility.title')}
               </h3>
               <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>At least 17 years old</span>
+                  <span>{t('donate.eligibility.point1')}</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Weigh at least 50 kg (110 lbs)</span>
+                  <span>{t('donate.eligibility.point2')}</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>In good general health</span>
+                  <span>{t('donate.eligibility.point3')}</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Last donation was at least 8 weeks ago</span>
+                  <span>{t('donate.eligibility.point4')}</span>
                 </li>
               </ul>
             </div>
@@ -204,7 +204,7 @@ export default function DonatePage() {
             {/* What to Expect */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                What to Expect
+                {t('donate.expect.title')}
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
@@ -212,9 +212,9 @@ export default function DonatePage() {
                     <Clock className="h-5 w-5 text-red-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Duration</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{t('donate.expect.durationTitle')}</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Process takes 30-45 minutes
+                      {t('donate.expect.durationDesc')}
                     </p>
                   </div>
                 </div>
@@ -223,9 +223,9 @@ export default function DonatePage() {
                     <Heart className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Amount</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">{t('donate.expect.amountTitle')}</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      About 450ml of blood collected
+                      {t('donate.expect.amountDesc')}
                     </p>
                   </div>
                 </div>
@@ -238,10 +238,10 @@ export default function DonatePage() {
                 <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
-                    Need Help?
+                    {t('donate.help.title')}
                   </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Call us at <strong>+1 (876) 567-8900</strong> for assistance.
+                    {t('donate.help.text', { phone: '+1 (876) 567-8900' })}
                   </p>
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function DonatePage() {
         {/* Donation Locations */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Donation Centers
+            {t('donate.centers.title')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {locations.map(location => (
@@ -277,7 +277,7 @@ export default function DonatePage() {
                     {location.hours}
                   </div>
                   <div className="flex items-center">
-                    <span className="mr-2">📞</span>
+                    <span className="mr-2">ðŸ“ž</span>
                     {location.phone}
                   </div>
                 </div>
@@ -289,3 +289,5 @@ export default function DonatePage() {
     </div>
   );
 }
+
+

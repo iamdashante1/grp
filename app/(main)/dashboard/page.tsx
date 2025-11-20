@@ -1,6 +1,7 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { 
   Heart, 
@@ -9,14 +10,17 @@ import {
   Bell, 
   Activity,
   MapPin,
-  User
+  User,
+  X
 } from 'lucide-react';
 import Onboarding from '@/components/onboarding/Onboarding';
 import DashboardFeatures from '@/components/dashboard/DashboardFeatures';
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [showUserCard, setShowUserCard] = useState(true);
 
   useEffect(() => {
     // Check if user has seen onboarding (stored in sessionStorage)
@@ -117,9 +121,14 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
+      {showOnboarding && (
+        <Onboarding 
+          onComplete={handleOnboardingComplete} 
+          onDismiss={() => setShowOnboarding(false)} 
+        />
+      )}
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-app">
         {/* Header with Restart Onboarding Button */}
         <div className="mb-8 flex items-center justify-between">
           <div>
@@ -141,7 +150,7 @@ export default function Dashboard() {
         </div>
 
         {/* Dashboard Features Component */}
-        <DashboardFeatures userName="User" />
+        <DashboardFeatures userName={user?.fullName || user?.name || ''} />
 
         {/* Original Stats Grid for Reference */}
         <div className="mt-8">
@@ -212,8 +221,8 @@ export default function Dashboard() {
                 </h2>
               </div>
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                {recentActivity.map((activity, idx) => (
+                  <div key={activity.id} className="flex items-start space-x-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors animate-fade-in-up" style={{animationDelay: `${idx*70}ms`}}>
                     <div className="flex-shrink-0 mt-1">
                       {getActivityIcon(activity.type)}
                     </div>
@@ -242,19 +251,33 @@ export default function Dashboard() {
           {/* Sidebar */}
           <div className="space-y-8">
             {/* User Profile Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+            {showUserCard && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 relative">
+              <button
+                type="button"
+                aria-label="Close profile card"
+                onClick={() => setShowUserCard(false)}
+                className="absolute top-3 right-3 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                title="Hide"
+              >
+                <X className="h-4 w-4" />
+              </button>
               <div className="text-center">
-                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">U</span>
+                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                  {user?.profileImage ? (
+                    <img src={user.profileImage} alt={user?.fullName || user?.name || 'User'} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl font-bold text-white">{(user?.fullName || user?.name || 'U').charAt(0)}</span>
+                  )}
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  User Name
+                  {user?.fullName || user?.name || 'Profile'}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">user@email.com</p>
+                <p className="text-gray-600 dark:text-gray-400">{user?.email}</p>
                 
                 <div className="mt-4">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getBloodTypeColor('O+')}`}>
-                    Blood Type: O+
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getBloodTypeColor(user?.bloodType || 'N/A')}`}>
+                    Blood Type: {user?.bloodType || 'N/A'}
                   </span>
                 </div>
 
@@ -270,6 +293,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Upcoming Appointments */}
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
@@ -340,3 +364,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+

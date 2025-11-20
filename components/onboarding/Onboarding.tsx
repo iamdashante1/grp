@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, User, Phone, MapPin, Droplet, Calendar as CalendarIcon } from 'lucide-react';
+import { ArrowRight, User, Phone, MapPin, Droplet, Calendar as CalendarIcon, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 import Dropdown from '@/components/ui/Dropdown';
@@ -9,9 +9,10 @@ import Calendar from '@/components/ui/Calendar';
 
 interface OnboardingProps {
   onComplete: (userData: any) => void;
+  onDismiss?: () => void;
 }
 
-export default function Onboarding({ onComplete }: OnboardingProps) {
+export default function Onboarding({ onComplete, onDismiss }: OnboardingProps) {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [showDobCalendar, setShowDobCalendar] = useState(false);
@@ -294,9 +295,9 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const StepIcon = stepIcons[currentStep];
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+      <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+        <div className="sticky top-0 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between animate-slide-down">
           <div className="flex items-center space-x-3">
             <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-lg">
               <StepIcon className="h-6 w-6 text-red-600" />
@@ -306,15 +307,28 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
               <p className="text-sm text-gray-500 dark:text-gray-400">Step {currentStep + 1} of 4</p>
             </div>
           </div>
+          <div>
+            <button
+              type="button"
+              aria-label="Close onboarding"
+              title="Close"
+              onClick={() => {
+                if (onDismiss) onDismiss();
+              }}
+              className="p-1 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
         <div className="px-6 pt-4">
           <div className="flex items-center space-x-2">
             {[0, 1, 2, 3].map(i => (
-              <div key={i} className={`h-2 flex-1 rounded-full transition-all duration-300 ${i <= currentStep ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-700'}`} />
+              <div key={i} className={`h-2 flex-1 rounded-full transition-all duration-300 ${i <= currentStep ? 'bg-red-600' : 'bg-gray-200 dark:bg-gray-700'} animate-fade-in-up`} style={{animationDelay: `${i*60}ms`}} />
             ))}
           </div>
         </div>
-        <div className="px-6 py-6">{renderStep()}</div>
+        <div className="px-6 py-6 animate-fade-in-up" style={{animationDelay: '120ms'}}>{renderStep()}</div>
         <div className="sticky bottom-0 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
           <button onClick={handleBack} disabled={currentStep === 0}
             className={`px-6 py-2 rounded-lg font-medium transition-colors ${currentStep === 0 ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'}`}>

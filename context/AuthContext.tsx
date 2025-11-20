@@ -2,10 +2,12 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import toast from 'react-hot-toast';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 interface User {
   _id: string;
   fullName: string;
+  name?: string;
   email: string;
   phone: string;
   role: {
@@ -40,6 +42,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Safe access to i18n within client-side context
+  let t: (k: string, p?: any) => string = (k) => k;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    t = useI18n().t;
+  } catch {}
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,9 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       sessionStorage.setItem('authToken', token);
       sessionStorage.setItem('userId', userData._id);
       
-      toast.success('Login successful!');
+      toast.success(t('auth.login.success'));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      const errorMessage = error instanceof Error ? error.message : t('auth.login.failed');
       toast.error(errorMessage);
       throw error;
     }
@@ -117,9 +125,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       sessionStorage.setItem('authToken', token);
       sessionStorage.setItem('userId', newUser._id);
       
-      toast.success('Registration successful!');
+      toast.success(t('auth.register.success'));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Registration failed';
+      const errorMessage = error instanceof Error ? error.message : t('auth.register.failed');
       toast.error(errorMessage);
       throw error;
     }
@@ -139,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('authToken');
     sessionStorage.removeItem('userId');
-    toast.success('Logged out successfully');
+    toast.success(t('auth.logout.success'));
   };
 
   return (

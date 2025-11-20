@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 interface DropdownOption {
   value: string;
@@ -21,6 +22,15 @@ interface DropdownProps {
   multiSelect?: boolean;
   disabled?: boolean;
   className?: string;
+  showClear?: boolean;
+  showChevron?: boolean;
+  icon?: React.ReactNode;
+  showLabel?: boolean;
+  fullWidth?: boolean;
+  alignRight?: boolean;
+  offsetY?: number;
+  offsetX?: number;
+  fitContent?: boolean;
 }
 
 export default function Dropdown({
@@ -35,8 +45,18 @@ export default function Dropdown({
   multiSelect = false,
   disabled = false,
   className = '',
+  showClear = true,
+  showChevron = true,
+  icon,
+  showLabel = true,
+  fullWidth = true,
+  alignRight = false,
+  offsetY = 8,
+  offsetX = 0,
+  fitContent = false,
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState('');
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 280 });
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -51,24 +71,21 @@ export default function Dropdown({
       if (!buttonRef.current || !dropdownRef.current) return;
 
       const button = buttonRef.current;
-      const containerRect = dropdownRef.current.getBoundingClientRect();
+      const wrapper = dropdownRef.current;
 
-      const top = button.offsetTop;
+      const top = button.offsetTop + button.offsetHeight + offsetY;
       const buttonWidth = button.offsetWidth;
 
-      const minWidth = 240;
+      const minWidth = 200;
       const maxWidth = 320;
-      const availableWidth = window.innerWidth - (containerRect.left + buttonWidth + 32);
-      const width = Math.max(minWidth, Math.min(maxWidth, availableWidth));
+      const width = Math.max(minWidth, Math.min(maxWidth, fullWidth ? (wrapper.clientWidth || maxWidth) : maxWidth));
 
-      const maxLeft = window.innerWidth - containerRect.left - width - 16;
-      const left = Math.min(buttonWidth + 16, Math.max(16, maxLeft));
+      let left = alignRight
+        ? Math.max(0, button.offsetLeft + buttonWidth - width)
+        : button.offsetLeft;
+      left += offsetX;
 
-      setDropdownPosition({
-        top,
-        left,
-        width,
-      });
+      setDropdownPosition({ top, left, width });
     };
 
     updatePosition();
@@ -77,25 +94,9 @@ export default function Dropdown({
     return () => {
       window.removeEventListener('resize', updatePosition);
     };
-  }, [isOpen]);
+  }, [isOpen, alignRight, fullWidth, offsetY, offsetX]);
 
-  // Lock scroll when dropdown is open
-  useEffect(() => {
-    if (isOpen) {
-      // Save current scroll position
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    } else {
-      // Restore scroll position
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    }
-  }, [isOpen]);
+  // Do not lock main scroll when dropdown is open
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -136,7 +137,7 @@ export default function Dropdown({
       return `${value.length} selected`;
     }
     const option = options.find((opt) => opt.value === value);
-    return option?.label || placeholder;
+    return option?.label || placeholder || t('dropdown.selectOption');
   };
 
   // Handle option selection
@@ -183,7 +184,7 @@ export default function Dropdown({
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
         className={`
-          w-full px-4 py-3 rounded-lg border text-left
+          ${fullWidth ? 'w-full' : ''} px-4 py-3 rounded-lg border text-left
           flex items-center justify-between
           transition-all duration-200
           ${
@@ -202,31 +203,44 @@ export default function Dropdown({
           }
         `}
       >
-        <span className="truncate">{getSelectedLabel()}</span>
+        <span className="truncate flex items-center gap-2">
+          {icon}
+          {showLabel ? getSelectedLabel() : ''}
+        </span>
         <div className="flex items-center space-x-2">
-          {value && (multiSelect ? (value as string[]).length > 0 : value) && !disabled && (
+          {showClear && value && (multiSelect ? (value as string[]).length > 0 : value) && !disabled && (
             <X
               className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
               onClick={handleClear}
             />
           )}
-          <ChevronDown
-            className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
-              isOpen ? 'transform rotate-180' : ''
-            }`}
-          />
+          {showChevron && (
+            <ChevronDown
+              className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
+                isOpen ? 'transform rotate-180' : ''
+              }`}
+            />
+          )}
         </div>
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
         <div 
-          className="absolute z-[9999] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl max-h-64 overflow-hidden"
-          style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`,
-            width: `${dropdownPosition.width}px`,
-          }}
+          className="absolute z-[9999] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl max-h-64 overflow-hidden whitespace-nowrap"
+          style={
+            fitContent
+              ? (
+                  alignRight
+                    ? { top: dropdownPosition.top, right: Math.max(0, -offsetX) }
+                    : { top: dropdownPosition.top, left: dropdownPosition.left + offsetX }
+                )
+              : {
+                  top: dropdownPosition.top,
+                  left: dropdownPosition.left,
+                  width: `${dropdownPosition.width}px`,
+                }
+          }
         >
           {/* Search Input */}
           {searchable && (
@@ -238,7 +252,7 @@ export default function Dropdown({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder={t('dropdown.searchPlaceholder')}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:border-red-500"
                 />
               </div>
@@ -249,7 +263,7 @@ export default function Dropdown({
           <div className="overflow-y-auto max-h-48 scrollbar-thin">
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
-                No options found
+                {t('dropdown.noOptions')}
               </div>
             ) : (
               filteredOptions.map((option) => (
@@ -290,7 +304,7 @@ export default function Dropdown({
                 onClick={handleClear}
                 className="text-sm text-red-600 dark:text-red-400 hover:underline cursor-pointer"
               >
-                Clear all ({value.length})
+                {t('dropdown.clearAll', { count: value.length })}
               </button>
             </div>
           )}

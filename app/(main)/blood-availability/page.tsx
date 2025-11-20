@@ -1,7 +1,8 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 import { 
   Search, 
   Filter, 
@@ -15,6 +16,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import Dropdown from '@/components/ui/Dropdown';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 const getBloodTypeColor = (bloodType: string) => {
   const colors: Record<string, string> = {
@@ -52,6 +54,7 @@ interface BloodStock {
 }
 
 export default function BloodAvailability() {
+  const { t } = useI18n();
   const [bloodStock, setBloodStock] = useState<BloodStock[]>([]);
   const [filteredStock, setFilteredStock] = useState<BloodStock[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -227,25 +230,18 @@ export default function BloodAvailability() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-app">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Blood Availability
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Real-time blood stock levels and availability
-              </p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('blood.title')}</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">{t('blood.subtitle')}</p>
             </div>
-            <button
-              onClick={refreshData}
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span>Refresh</span>
-            </button>
+            <Button onClick={refreshData} size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              <span>{t('common.refresh')}</span>
+            </Button>
           </div>
         </div>
 
@@ -256,7 +252,7 @@ export default function BloodAvailability() {
               <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search blood type..."
+                placeholder={t('blood.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -264,7 +260,7 @@ export default function BloodAvailability() {
             </div>
 
             <Dropdown
-              placeholder="Filter by status"
+              placeholder={t('blood.filterStatus')}
               value={filterStatus}
               onChange={(value) => setFilterStatus(value as string)}
               options={[
@@ -278,7 +274,7 @@ export default function BloodAvailability() {
             />
 
             <Dropdown
-              placeholder="All Parishes"
+              placeholder={t('blood.allParishes')}
               value=""
               onChange={() => {}}
               searchable
@@ -473,3 +469,5 @@ export default function BloodAvailability() {
     </div>
   );
 }
+
+

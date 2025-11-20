@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Code, Calendar as CalendarIcon, ChevronDown } from 'lucide-react';
@@ -85,7 +85,7 @@ export default function ComponentsDemo() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container-app">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
@@ -391,14 +391,14 @@ export default function ComponentsDemo() {
                 Dropdown Features
               </h3>
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                <li>✅ Single and multi-select modes</li>
-                <li>✅ Search/filter functionality</li>
-                <li>✅ Clear selection button</li>
-                <li>✅ Disabled state support</li>
-                <li>✅ Error state with messages</li>
-                <li>✅ Click outside to close</li>
-                <li>✅ Dark mode support</li>
-                <li>✅ Fully accessible</li>
+                <li>âœ… Single and multi-select modes</li>
+                <li>âœ… Search/filter functionality</li>
+                <li>âœ… Clear selection button</li>
+                <li>âœ… Disabled state support</li>
+                <li>âœ… Error state with messages</li>
+                <li>âœ… Click outside to close</li>
+                <li>âœ… Dark mode support</li>
+                <li>âœ… Fully accessible</li>
               </ul>
             </div>
             
@@ -407,14 +407,14 @@ export default function ComponentsDemo() {
                 Calendar Features
               </h3>
               <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-                <li>✅ Date selection with constraints</li>
-                <li>✅ Time slot selection</li>
-                <li>✅ Available dates filtering</li>
-                <li>✅ Highlighted special dates</li>
-                <li>✅ Today indicator</li>
-                <li>✅ Month navigation</li>
-                <li>✅ Dark mode support</li>
-                <li>✅ Interactive legend</li>
+                <li>âœ… Date selection with constraints</li>
+                <li>âœ… Time slot selection</li>
+                <li>âœ… Available dates filtering</li>
+                <li>âœ… Highlighted special dates</li>
+                <li>âœ… Today indicator</li>
+                <li>âœ… Month navigation</li>
+                <li>âœ… Dark mode support</li>
+                <li>âœ… Interactive legend</li>
               </ul>
             </div>
           </div>
@@ -423,3 +423,5 @@ export default function ComponentsDemo() {
     </div>
   );
 }
+
+
