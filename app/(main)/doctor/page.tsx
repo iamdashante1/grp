@@ -2,13 +2,13 @@
 
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
-import { Stethoscope, ClipboardHeart, ShieldCheck, UsersRound, CalendarCheck, MessageCircle, Activity, FileText, PhoneCall, AlertTriangle, FolderCheck, BrainCircuit } from 'lucide-react';
+import { Stethoscope, ShieldCheck, UsersRound, CalendarCheck, MessageCircle, Activity, FileText, PhoneCall, AlertTriangle, FolderCheck, BrainCircuit } from 'lucide-react';
 
 const services = [
   {
     title: 'Unified Patient Dashboard',
     description: 'Track pending blood requests, monitor fulfillment progress, and view donor matches in real time.',
-    icon: ClipboardHeart,
+    icon: Stethoscope,
   },
   {
     title: 'Clinical Compatibility Tools',
