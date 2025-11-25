@@ -159,7 +159,7 @@ export default function DonatePage() {
                         className="w-4 h-4 text-red-600 rounded"
                       />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
-                        I got a good night's sleep
+                        I got a good night&apos;s sleep
                       </span>
                     </label>
                   </div>
@@ -232,20 +232,6 @@ export default function DonatePage() {
               </div>
             </div>
 
-            {/* Emergency Contact */}
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-              <div className="flex items-start space-x-2">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
-                    {t('donate.help.title')}
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {t('donate.help.text', { phone: '+1 (876) 567-8900' })}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

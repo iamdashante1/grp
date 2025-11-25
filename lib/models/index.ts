@@ -7,6 +7,7 @@ export { default as Appointment } from './Appointment';
 export { default as Donation } from './Donation';
 export { default as Request } from './Request';
 export { default as Notification } from './Notification';
+export { default as ContactMessage } from './ContactMessage';
 
 // Export types
 export type { IUser } from './User';
@@ -17,3 +18,4 @@ export type { IAppointment } from './Appointment';
 export type { IDonation } from './Donation';
 export type { IRequest } from './Request';
 export type { INotification } from './Notification';
+export type { IContactMessage } from './ContactMessage';

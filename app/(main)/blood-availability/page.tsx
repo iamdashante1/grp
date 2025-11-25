@@ -419,7 +419,7 @@ export default function BloodAvailability() {
               </div>
 
               <Link 
-                href="/contact" 
+                href="/support" 
                 className="w-full mt-4 bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium block text-center"
               >
                 Request Blood
@@ -436,35 +436,6 @@ export default function BloodAvailability() {
             </p>
           </div>
         )}
-
-        {/* Emergency Contact */}
-        <div className="mt-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6">
-          <div className="flex items-start space-x-3">
-            <AlertTriangle className="h-6 w-6 text-red-500 mt-0.5 flex-shrink-0" />
-            <div>
-              <h3 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-2">
-                Emergency Blood Request
-              </h3>
-              <p className="text-red-700 dark:text-red-300 mb-4">
-                For urgent blood requirements, please contact our 24/7 emergency hotline.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href="tel:+1-876-BLOOD-911"
-                  className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium text-center"
-                >
-                  Call Emergency Line
-                </a>
-                <Link 
-                  href="/contact" 
-                  className="border border-red-600 text-red-600 dark:text-red-400 px-6 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors font-medium text-center"
-                >
-                  Submit Emergency Request
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

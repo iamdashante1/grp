@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Heart, Bell, Menu, X, User, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -90,9 +91,11 @@ export default function Navbar() {
             ) : (
               <>
                 <NavLink href="/about">{t('nav.about')}</NavLink>
-                <NavLink href="/contact">{t('nav.contact')}</NavLink>
               </>
             )}
+            <NavLink href="/doctor">{t('nav.doctors')}</NavLink>
+            <NavLink href="/patient">{t('nav.patients')}</NavLink>
+            <NavLink href="/support">{t('nav.contact')}</NavLink>
           </div>
 
           {/* Right side items */}
@@ -113,12 +116,15 @@ export default function Navbar() {
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                     className="flex items-center space-x-2 p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 cursor-pointer"
                   >
-                    <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
+                    <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden relative">
                       {user?.profileImage ? (
-                        <img 
-                          src={user.profileImage} 
+                        <Image
+                          src={user.profileImage}
                           alt={user.fullName || user?.name || 'User'}
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="32px"
+                          className="object-cover"
+                          unoptimized
                         />
                       ) : (
                         <span className="text-white text-sm font-medium">
@@ -165,9 +171,16 @@ export default function Navbar() {
           {/* Mobile: show user name/avatar when authenticated */}
           {isAuthenticated && (
             <Link href="/profile" className="md:hidden mr-2 flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden relative">
                 {user?.profileImage ? (
-                  <img src={user.profileImage} alt={displayName} className="w-full h-full object-cover" />
+                  <Image
+                    src={user.profileImage}
+                    alt={displayName}
+                    fill
+                    sizes="32px"
+                    className="object-cover"
+                    unoptimized
+                  />
                 ) : (
                   <span className="text-white text-sm font-medium">{firstName.charAt(0)}</span>
                 )}
@@ -192,9 +205,16 @@ export default function Navbar() {
           <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-800">
             {isAuthenticated && (
               <div className="flex items-center space-x-3 px-3 py-3 border-b border-gray-200 dark:border-gray-700">
-                <div className="w-9 h-9 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
+                <div className="w-9 h-9 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden relative">
                   {user?.profileImage ? (
-                    <img src={user.profileImage} alt={user.fullName || user?.name || 'User'} className="w-full h-full object-cover" />
+                    <Image
+                      src={user.profileImage}
+                      alt={user.fullName || user?.name || 'User'}
+                      fill
+                      sizes="36px"
+                      className="object-cover"
+                      unoptimized
+                    />
                   ) : (
                     <span className="text-white text-sm font-medium">{(user?.fullName || user?.name || 'U').charAt(0)}</span>
                   )}
@@ -268,6 +288,36 @@ export default function Navbar() {
                 >
                   {t('nav.profile')}
                 </Link>
+                <Link
+                  href="/doctor"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === '/doctor'
+                      ? 'bg-primary-600 text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {t('nav.doctors')}
+                </Link>
+                <Link
+                  href="/patient"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === '/patient'
+                      ? 'bg-primary-600 text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {t('nav.patients')}
+                </Link>
+                <Link
+                  href="/support"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === '/support'
+                      ? 'bg-primary-600 text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {t('nav.contact')}
+                </Link>
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
@@ -292,9 +342,29 @@ export default function Navbar() {
                   {t('nav.about')}
                 </Link>
                 <Link
-                  href="/contact"
+                  href="/doctor"
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
-                    pathname === '/contact'
+                    pathname === '/doctor'
+                      ? 'bg-primary-600 text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {t('nav.doctors')}
+                </Link>
+                <Link
+                  href="/patient"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === '/patient'
+                      ? 'bg-primary-600 text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {t('nav.patients')}
+                </Link>
+                <Link
+                  href="/support"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === '/support'
                       ? 'bg-primary-600 text-white'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}

@@ -33,6 +33,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  userRole: string | null;
+  hasRole: (...roles: string[]) => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: any) => Promise<void>;
@@ -141,6 +143,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const normalizedRole = user?.role?.name ? user.role.name.toLowerCase() : null;
+
+  const hasRole = (...roles: string[]) => {
+    if (!normalizedRole) return false;
+    return roles.some((role) => role.toLowerCase() === normalizedRole);
+  };
+
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
@@ -151,7 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, updateUser }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, userRole: normalizedRole, hasRole, login, logout, register, updateUser }}>
       {!isLoading && children}
     </AuthContext.Provider>
   );

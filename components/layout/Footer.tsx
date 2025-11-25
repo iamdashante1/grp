@@ -75,7 +75,7 @@ export default function Footer() {
                   <Link href="/request" className="text-gray-400 hover:text-white transition-colors duration-200">{t('nav.request')}</Link>
                   </li>
                   <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white transition-colors duration-200">{t('nav.contact')}</Link>
+                  <Link href="/support" className="text-gray-400 hover:text-white transition-colors duration-200">{t('nav.contact')}</Link>
                   </li>
                 </>
               )}

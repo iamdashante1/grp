@@ -18,7 +18,7 @@ export default function NotFound() {
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">404</h1>
           <h2 className="mt-3 text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">Page Not Found</h2>
           <p className="mt-3 text-gray-600 dark:text-gray-400">
-            We couldn't find the page you're looking for. It may have been moved, deleted, or never existed.
+            We couldn&apos;t find the page you&apos;re looking for. It may have been moved, deleted, or never existed.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
@@ -26,7 +26,7 @@ export default function NotFound() {
               <Home className="h-5 w-5 mr-2" />
               Back to Home
             </Button>
-            <Button href="/contact" variant="ghost" size="md" className="inline-flex items-center justify-center">
+            <Button href="/support" variant="ghost" size="md" className="inline-flex items-center justify-center">
               <LifeBuoy className="h-5 w-5 mr-2" />
               Contact Support
             </Button>

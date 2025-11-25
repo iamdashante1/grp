@@ -139,7 +139,7 @@ export default function About() {
             <h1 className="text-5xl font-bold mb-6">About BloodBridge</h1>
             <p className="text-xl max-w-3xl mx-auto leading-relaxed">
               Connecting Jamaican donors with those in need through innovative technology and compassionate care. 
-              We're building a bridge between generosity and life-saving medical treatment across the island.
+              We&apos;re building a bridge between generosity and life-saving medical treatment across the island.
             </p>
           </div>
         </div>

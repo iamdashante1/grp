@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { 
   User, 
   Mail, 
@@ -184,13 +185,16 @@ export default function Profile() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="relative group">
-              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white dark:border-gray-700 shadow-lg">
+              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white dark:border-gray-700 shadow-lg relative">
                 {profileImage ? (
-                  <img 
-                    src={profileImage} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover"
+                  <Image
+                    src={profileImage}
+                    alt="Profile"
+                    fill
+                    sizes="128px"
+                    className="object-cover"
                     onError={() => setProfileImage('/default-avatar.jpg')}
+                    unoptimized
                   />
                 ) : (
                   <div className="w-full h-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">

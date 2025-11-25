@@ -115,7 +115,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/contact"
+              href="/support"
               className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer animate-fade-in-up hover-lift"
               style={{ animationDelay: '160ms' }}
             >

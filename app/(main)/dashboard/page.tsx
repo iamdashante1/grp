@@ -1,8 +1,9 @@
 ﻿'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Heart, 
   Droplet, 
@@ -17,7 +18,7 @@ import Onboarding from '@/components/onboarding/Onboarding';
 import DashboardFeatures from '@/components/dashboard/DashboardFeatures';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
   const [showUserCard, setShowUserCard] = useState(true);
@@ -119,6 +120,28 @@ export default function Dashboard() {
     return 'border-red-500 text-red-700 dark:text-red-400';
   };
 
+  const quickActions = useMemo(() => {
+    if (userRole && ['doctor', 'hospital'].includes(userRole)) {
+      return [
+        { href: '/request', label: 'Manage blood requests', tone: 'primary' },
+        { href: '/doctor', label: 'Open doctor tools', tone: 'outline' },
+        { href: '/support', label: 'Contact coordination team', tone: 'danger' },
+      ];
+    }
+    if (userRole && ['patient', 'recipient', 'caregiver'].includes(userRole)) {
+      return [
+        { href: '/patient', label: 'Track my request', tone: 'primary' },
+        { href: '/request', label: 'Submit new request', tone: 'danger' },
+        { href: '/support', label: 'Chat with advocate', tone: 'outline' },
+      ];
+    }
+    return [
+      { href: '/donate', label: 'Schedule donation', tone: 'primary' },
+      { href: '/dashboard', label: 'View appointments', tone: 'outline' },
+      { href: '/support', label: 'Contact support', tone: 'danger' },
+    ];
+  }, [userRole]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       {showOnboarding && (
@@ -136,7 +159,7 @@ export default function Dashboard() {
               Dashboard
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Here's what's happening with your blood donation activities.
+              Here&apos;s what&apos;s happening with your blood donation activities.
             </p>
           </div>
           {hasSeenOnboarding && (
@@ -263,9 +286,16 @@ export default function Dashboard() {
                 <X className="h-4 w-4" />
               </button>
               <div className="text-center">
-                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden relative">
                   {user?.profileImage ? (
-                    <img src={user.profileImage} alt={user?.fullName || user?.name || 'User'} className="w-full h-full object-cover" />
+                    <Image
+                      src={user.profileImage}
+                      alt={user?.fullName || user?.name || 'User'}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                      unoptimized
+                    />
                   ) : (
                     <span className="text-2xl font-bold text-white">{(user?.fullName || user?.name || 'U').charAt(0)}</span>
                   )}
@@ -338,24 +368,22 @@ export default function Dashboard() {
                 Quick Actions
               </h3>
               <div className="space-y-3">
-                <Link 
-                  href="/contact" 
-                  className="w-full bg-primary-600 text-white py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium block text-center"
-                >
-                  Schedule Donation
-                </Link>
-                <Link 
-                  href="/contact" 
-                  className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium block text-center"
-                >
-                  Request Blood
-                </Link>
-                <Link 
-                  href="/profile" 
-                  className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium block text-center"
-                >
-                  Update Profile
-                </Link>
+                {quickActions.map((action) => {
+                  const toneClasses = action.tone === 'danger'
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : action.tone === 'outline'
+                      ? 'border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      : 'bg-primary-600 text-white hover:bg-primary-700';
+                  return (
+                    <Link
+                      key={action.label}
+                      href={action.href}
+                      className={`w-full py-2 px-4 rounded-lg transition-colors text-sm font-medium block text-center ${toneClasses}`}
+                    >
+                      {action.label}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

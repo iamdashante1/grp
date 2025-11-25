@@ -6,8 +6,7 @@ interface INotificationData {
   requestId?: mongoose.Types.ObjectId;
   bloodType?: string;
   actionUrl?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 interface IDeliveryStatus {
@@ -39,9 +38,14 @@ export interface INotification extends Document {
   isExpired(): boolean;
 }
 
+interface AppointmentDetails {
+  _id: mongoose.Types.ObjectId;
+  appointmentDate: string | Date;
+  timeSlot: string;
+}
+
 interface INotificationModel extends Model<INotification> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createAppointmentReminder(userId: mongoose.Types.ObjectId, appointment: any): Promise<INotification>;
+  createAppointmentReminder(userId: mongoose.Types.ObjectId, appointment: AppointmentDetails): Promise<INotification>;
   createStockAlert(userIds: mongoose.Types.ObjectId[], bloodType: string, stockLevel: string): Promise<INotification[]>;
   getUnreadCount(userId: mongoose.Types.ObjectId): Promise<number>;
 }
@@ -177,8 +181,7 @@ notificationSchema.methods.isExpired = function(): boolean {
 };
 
 // Static method to create appointment reminder
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-notificationSchema.statics.createAppointmentReminder = function(userId: mongoose.Types.ObjectId, appointment: any): Promise<INotification> {
+notificationSchema.statics.createAppointmentReminder = function(userId: mongoose.Types.ObjectId, appointment: AppointmentDetails): Promise<INotification> {
   const appointmentDate = new Date(appointment.appointmentDate);
   const formattedDate = appointmentDate.toLocaleDateString();
   const formattedTime = appointment.timeSlot;
